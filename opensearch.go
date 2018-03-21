@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"golang.org/x/text/language"
+	"io"
 	"net/mail"
 	"net/url"
 	"strings"
@@ -34,7 +35,7 @@ type Description struct {
 }
 
 // <Url type="application/atom+xml"
-//       template="http://example.com/?q={searchTerms}&amp;pw={startPage?}&amp;format=atom"/>
+// template="http://example.com/?q={searchTerms}&amp;pw={startPage?}&amp;format=atom"/>
 type URL struct {
 	Type     string
 	Template string
@@ -53,6 +54,12 @@ type Image struct {
 type Query struct {
 	Role       string
 	SearchTerm string
+}
+
+func New(r io.Reader) (*Description, error) {
+	var d = &Description{}
+	err := xml.NewDecoder(r).Decode(d)
+	return d, nil
 }
 
 func (d *Description) Request(typ, q, startPage string) (*url.URL, error) {
