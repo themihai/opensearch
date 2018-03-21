@@ -59,7 +59,7 @@ type Query struct {
 func New(r io.Reader) (*Description, error) {
 	var d = &Description{}
 	err := xml.NewDecoder(r).Decode(d)
-	return d, nil
+	return d, err
 }
 
 func (d *Description) Request(typ, q, startPage string) (*url.URL, error) {
