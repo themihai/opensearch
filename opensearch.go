@@ -62,7 +62,13 @@ func New(r io.Reader) (*Description, error) {
 	return d, err
 }
 
+func (d *Description) Write(w io.Writer) error {
+	return xml.NewEncoder(w).Encode(d)
+}
+
 func (d *Description) Request(typ, q, startPage string) (*url.URL, error) {
+	q = url.QueryEscape(q)
+	startPage = url.QueryEscape(startPage)
 	for _, v := range d.URL {
 		if v.Type == typ {
 			v.Template = strings.Replace(v.Template, `{searchTerms}`, q, 1)
