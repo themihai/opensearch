@@ -35,7 +35,7 @@ type Description struct {
 }
 
 // <Url type="application/atom+xml"
-// template="http://example.com/?q={searchTerms}&amp;pw={startPage?}&amp;format=atom"/>
+// template="http://example.com/?q={searchTerms}&amp;pw={startPage?}&amp;filters={filters}&amp;format=atom"/>
 type URL struct {
 	Type     string
 	Template string
@@ -66,12 +66,13 @@ func (d *Description) Write(w io.Writer) error {
 	return xml.NewEncoder(w).Encode(d)
 }
 
-func (d *Description) Request(typ, q, startPage string) (*url.URL, error) {
+func (d *Description) Request(typ, q, filters string, startPage string) (*url.URL, error) {
 	q = url.QueryEscape(q)
 	startPage = url.QueryEscape(startPage)
 	for _, v := range d.URL {
 		if v.Type == typ {
 			v.Template = strings.Replace(v.Template, `{searchTerms}`, q, 1)
+			v.Template = strings.Replace(v.Template, `{filters}`, filters, 1)
 			v.Template = strings.Replace(v.Template, `{startPage}`, startPage, 1)
 			return url.Parse(v.Template)
 		}
