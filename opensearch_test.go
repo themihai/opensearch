@@ -3,6 +3,7 @@ package opensearch
 import (
 	"encoding/xml"
 	"net/mail"
+	"reflect"
 	"testing"
 )
 
@@ -35,13 +36,13 @@ func TestEncoding(t *testing.T) {
 				Height: 64,
 				Width:  64,
 				Type:   "image/png",
-				URL:    "http://example.com/websearch.png",
+				Value:  "http://example.com/websearch.png",
 			},
 			Image{
 				Height: 16,
 				Width:  16,
 				Type:   "image/vnd.microsoft.icon",
-				URL:    "http://example.com/websearch.ico",
+				Value:  "http://example.com/websearch.ico",
 			},
 		},
 	}
@@ -51,6 +52,14 @@ func TestEncoding(t *testing.T) {
 	}
 	if string(b) != e {
 		t.Errorf("got %s", string(b))
+	}
+
+	dd, err := Decode([]byte(e))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(dd, d) {
+		t.Errorf("got %#v", dd.URL)
 	}
 }
 
